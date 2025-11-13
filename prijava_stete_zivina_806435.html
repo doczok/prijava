@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava štete na živini - Spasić Farm</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2c3e50 100%);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.4em;
+            margin-bottom: 10px;
+            position: relative;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            opacity: 0.85;
+            position: relative;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .card h2 {
+            color: #1a3a5f;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f0fe;
+            font-weight: 600;
+            font-size: 1.4em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+
+        input, select {
+            padding: 12px 15px;
+            border: 1px solid #d1d8e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+            background: white;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #4a6582;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2c3e50 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 6px 12px rgba(26, 58, 95, 0.2);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2c3e50 100%);
+            color: white;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eef2f6;
+            background: white;
+        }
+
+        td input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d8e0;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        tr:hover td {
+            background: #f0f7ff;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4a90e2 0%, #3a7bd5 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3a7bd5 0%, #2a6bc7 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(58, 123, 213, 0.25);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.25);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(192, 57, 43, 0.25);
+        }
+
+        .button-group {
+            margin-top: 25px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .export-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #d1e7ff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #bbdefb;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #e3f2fd 0%, #d1e7ff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border: 1px solid #bbdefb;
+        }
+
+        .summary h3 {
+            color: #1a3a5f;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+
+        .summary-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a3a5f;
+            margin-top: 5px;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .manual-input {
+            background-color: #fff9e6 !important;
+            border-color: #f39c12 !important;
+        }
+
+        .manual-input:focus {
+            background-color: #fffbf0 !important;
+            border-color: #f39c12 !important;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.15) !important;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            display: none;
+            z-index: 2000;
+            font-weight: 600;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4a90e2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #1a3a5f;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8f0fe;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-body label {
+            display: block;
+            margin: 12px 0 6px 0;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .checkbox-group {
+            margin: 15px 0;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .card { box-shadow: none; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Generišem Excel fajl...</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <header>
+        <h1>🐔 Prijava štete na živini</h1>
+        <p class="subtitle" id="subtitle">Spasić Farm doo Stalać - Polisa #806411</p>
+    </header>
+
+    <div class="container">
+        <div class="tabs no-print">
+            <button class="tab active" onclick="switchTab('lb', this)">tab1</button>
+            <button class="tab" onclick="switchTab('lsl', this)">tab2</button>
+            <button class="tab" onclick="switchTab('export', this)">📊 Export</button>
+        </div>
+
+        <!-- Tab 1 -->
+        <div id="lb" class="tab-content active">
+            <form id="lbForm">
+                <div class="card">
+                    <h2>📋 Osnovni podaci</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Osiguranik:</label>
+                            <input type="text" id="lbOsiguranik" value="Spasić Farm doo Stalać">
+                        </div>
+                        <div class="form-group">
+                            <label>Radna jedinica/farma:</label>
+                            <input type="text" id="lbRadnaJedinica" value="Ćićevac, Lovačko Polje">
+                        </div>
+                        <div class="form-group">
+                            <label>Vrsta/Kategorija:</label>
+                            <input type="text" id="lbVrsta" value="Lohmann Brown">
+                        </div>
+                        <div class="form-group">
+                            <label>Objekat:</label>
+                            <input type="text" id="lbObjekat" value="FĆ 1">
+                        </div>
+                        <div class="form-group">
+                            <label>BPG:</label>
+                            <input type="text" id="lbBPG" value="744247000750">
+                        </div>
+                        <div class="form-group">
+                            <label>HID:</label>
+                            <input type="text" id="lbHID" value="744328008498">
+                        </div>
+                        <div class="form-group">
+                            <label>Broj polise:</label>
+                            <input type="text" id="lbBrojPolise" value="806411">
+                        </div>
+                        <div class="form-group">
+                            <label>Datum početka osiguranja:</label>
+                            <input type="date" id="lbPocetak" value="2025-01-01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Datum isteka osiguranja:</label>
+                            <input type="date" id="lbIstek" value="2025-12-31" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Broj useljenih:</label>
+                            <input type="number" id="lbUseljeno" value="19499" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>🔍 Podaci o šteti</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Vrsta štete:</label>
+                            <select id="lbVrstaStete" required>
+                                <option value="Uginuće" selected>Uginuće</option>
+                                <option value="Prinudno klanje">Prinudno klanje</option>
+                                <option value="Prinudno ubijanje">Prinudno ubijanje</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Uzrok štete:</label>
+                            <select id="lbUzrokStete" required>
+                                <option>Bolest</option>
+                                <option>Nesrećni slučaj</option>
+                                <option>Ekstremne temperature</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Veterinar:</label>
+                            <input type="text" id="lbVeterinar" value="Jovan Petrovski" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Broj licence:</label>
+                            <input type="text" id="lbLicenca" value="9987" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prijava štete od:</label>
+                            <input type="date" id="lbOd" value="2025-02-16" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prijava štete do:</label>
+                            <input type="date" id="lbDo" value="2025-02-18" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📊 Dnevni zapisnici štete</h2>
+                    <button type="button" class="btn btn-primary no-print" onclick="addRow('lbTable')">➕ Dodaj novi dan</button>
+                    
+                    <div style="overflow-x: auto; margin-top: 15px;">
+                        <table id="lbTable">
+                            <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Brojno stanje</th>
+                                    <th>Uginulo</th>
+                                    <th>Dijagnoza</th>
+                                    <th>Terapija</th>
+                                    <th class="no-print">Brisanje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="date" value="2025-02-16" required></td>
+                                    <td><input type="number" value="19494" required class="brojno-stanje uginulo-input"></td>
+                                    <td><input type="number" value="5" required class="deaths uginulo-input"></td>
+                                    <td><input type="text" value="Legenot" class="diagnosis"></td>
+                                    <td><input type="text" value="AD3E, B-complex"></td>
+                                    <td class="no-print"><button type="button" class="delete-btn" onclick="deleteRow(this)">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="date" value="2025-02-17"></td>
+                                    <td><input type="number" value="19492" class="brojno-stanje uginulo-input"></td>
+                                    <td><input type="number" value="2" class="deaths uginulo-input"></td>
+                                    <td><input type="text" value="Egg-peritonitis" class="diagnosis"></td>
+                                    <td><input type="text" value="AD3E, B-complex"></td>
+                                    <td class="no-print"><button type="button" class="delete-btn" onclick="deleteRow(this)">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="date" value="2025-02-18"></td>
+                                    <td><input type="number" value="19490" class="brojno-stanje uginulo-input"></td>
+                                    <td><input type="number" value="2" class="deaths uginulo-input"></td>
+                                    <td><input type="text" value="Infarctus cordis" class="diagnosis"></td>
+                                    <td><input type="text" value="-"></td>
+                                    <td class="no-print"><button type="button" class="delete-btn" onclick="deleteRow(this)">🗑️</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="summary">
+                        <h3>📈 Rezime štete</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div>Total uginulih</div>
+                                <div class="summary-value" id="lbTotalUginulo">0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div>Prosečno dnevno</div>
+                                <div class="summary-value" id="lbProsek">0.0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div>Procenat od useljenih</div>
+                                <div class="summary-value" id="lbProcenat">0.00%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group no-print">
+                        <button type="submit" class="btn btn-success">💾 Sačuvaj prijavu</button>
+                        <button type="button" class="btn btn-primary" onclick="printPage()">🖨️ Štampaj</button>
+                        <button type="button" class="btn btn-primary" onclick="openEmailModal('lb')">📧 Pošalji email</button>
+                        <button type="button" class="btn btn-danger" onclick="resetForm('lbForm')">🔄 Resetuj</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tab 2 -->
+        <div id="lsl" class="tab-content">
+            <form id="lslForm">
+                <div class="card">
+                    <h2>📋 Osnovni podaci</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Osiguranik:</label>
+                            <input type="text" id="lslOsiguranik" value="Spasić Farm doo Stalać">
+                        </div>
+                        <div class="form-group">
+                            <label>Radna jedinica/farma:</label>
+                            <input type="text" id="lslRadnaJedinica" value="Ćićevac, Lovačko Polje">
+                        </div>
+                        <div class="form-group">
+                            <label>Vrsta/Kategorija:</label>
+                            <input type="text" id="lslVrsta" value="Lohmann Brown LSL">
+                        </div>
+                        <div class="form-group">
+                            <label>Objekat:</label>
+                            <input type="text" id="lslObjekat" value="FĆ 1">
+                        </div>
+                        <div class="form-group">
+                            <label>BPG:</label>
+                            <input type="text" id="lslBPG" value="744247000750">
+                        </div>
+                        <div class="form-group">
+                            <label>HID:</label>
+                            <input type="text" id="lslHID" value="744328008498">
+                        </div>
+                        <div class="form-group">
+                            <label>Broj polise:</label>
+                            <input type="text" id="lslBrojPolise" value="806411">
+                        </div>
+                        <div class="form-group">
+                            <label>Datum početka osiguranja:</label>
+                            <input type="date" id="lslPocetak" value="2025-01-01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Datum isteka osiguranja:</label>
+                            <input type="date" id="lslIstek" value="2025-12-31" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Broj useljenih:</label>
+                            <input type="number" id="lslUseljeno" value="4123" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>🔍 Podaci o šteti</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Vrsta štete:</label>
+                            <select id="lslVrstaStete" required>
+                                <option value="Uginuće" selected>Uginuće</option>
+                                <option value="Prinudno klanje">Prinudno klanje</option>
+                                <option value="Prinudno ubijanje">Prinudno ubijanje</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Uzrok štete:</label>
+                            <select id="lslUzrokStete" required>
+                                <option>Bolest</option>
+                                <option>Nesrećni slučaj</option>
+                                <option>Ekstremne temperature</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Veterinar:</label>
+                            <input type="text" id="lslVeterinar" value="Jovan Petrovski" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Broj licence:</label>
+                            <input type="text" id="lslLicenca" value="9987" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prijava štete od:</label>
+                            <input type="date" id="lslOd" value="2025-02-16" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prijava štete do:</label>
+                            <input type="date" id="lslDo" value="2025-02-18" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📊 Dnevni zapisnici štete</h2>
+                    <button type="button" class="btn btn-primary no-print" onclick="addRow('lslTable')">➕ Dodaj novi dan</button>
+                    
+                    <div style="overflow-x: auto; margin-top: 15px;">
+                        <table id="lslTable">
+                            <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Brojno stanje</th>
+                                    <th>Uginulo</th>
+                                    <th>Dijagnoza</th>
+                                    <th>Terapija</th>
+                                    <th class="no-print">Brisanje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="date" value="2025-02-16" required></td>
+                                    <td><input type="number" value="4123" required class="brojno-stanje uginulo-input"></td>
+                                    <td><input type="number" value="1" class="deaths uginulo-input"></td>
+                                    <td><input type="text" value="Infarctus cordis" class="diagnosis"></td>
+                                    <td><input type="text" value="-"></td>
+                                    <td class="no-print"><button type="button" class="delete-btn" onclick="deleteRow(this)">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="date" value="2025-02-18"></td>
+                                    <td><input type="number" value="4122" class="brojno-stanje uginulo-input"></td>
+                                    <td><input type="number" value="1" class="deaths uginulo-input"></td>
+                                    <td><input type="text" value="Infarctus cordis" class="diagnosis"></td>
+                                    <td><input type="text" value="-"></td>
+                                    <td class="no-print"><button type="button" class="delete-btn" onclick="deleteRow(this)">🗑️</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="summary">
+                        <h3>📈 Rezime štete</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div>Total uginulih</div>
+                                <div class="summary-value" id="lslTotalUginulo">0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div>Prosečno dnevno</div>
+                                <div class="summary-value" id="lslProsek">0.0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div>Procenat od useljenih</div>
+                                <div class="summary-value" id="lslProcenat">0.00%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group no-print">
+                        <button type="submit" class="btn btn-success">💾 Sačuvaj prijavu</button>
+                        <button type="button" class="btn btn-primary" onclick="printPage()">🖨️ Štampaj</button>
+                        <button type="button" class="btn btn-primary" onclick="openEmailModal('lsl')">📧 Pošalji email</button>
+                        <button type="button" class="btn btn-danger" onclick="resetForm('lslForm')">🔄 Resetuj</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Export Tab -->
+        <div id="export" class="tab-content">
+            <div class="card">
+                <h2>📊 Opcije izvoza u Excel</h2>
+                <p>Izaberite šta želite da izvezete u Excel format (.xlsx)</p>
+                
+                <div class="export-section">
+                    <h3>🐔 Izvoz prijava šteta</h3>
+                    <div class="export-buttons">
+                        <button class="btn btn-success" onclick="exportCurrentClaim('lb')">📋 Izvoz prijave tab1</button>
+                        <button class="btn btn-success" onclick="exportCurrentClaim('lsl')">📋 Izvoz prijave tab2</button>
+                        <button class="btn btn-primary" onclick="exportAllClaims()">📊 Izvoz OBE prijave</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div class="modal" id="emailModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEmailModal()">&times;</span>
+            <div class="modal-header">📧 Slanje email notifikacije</div>
+            <div class="modal-body">
+                <p>Izaberite koje prijave želite da pošaljete na email:</p>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="emailLb" checked> tab1</label>
+                    <label><input type="checkbox" id="emailLsl"> tab2</label>
+                </div>
+                <p><strong>Napomena:</strong> Email će biti poslat na adresu <em>stete@risk.co.rs</em>.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="sendEmailNotification()">📤 Pošalji email</button>
+                <button class="btn btn-danger" onclick="closeEmailModal()">❌ Zatvori</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const target = document.getElementById(tabName);
+            if (target) target.classList.add('active');
+            
+            // Update subtitle when switching tabs
+            updateSubtitle();
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'success' ? '#2ecc71' : '#e74c3c';
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        function addRow(tableId) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="date" required></td>
+                <td><input type="number" required class="brojno-stanje uginulo-input"></td>
+                <td><input type="number" required class="deaths uginulo-input"></td>
+                <td><input type="text" class="diagnosis"></td>
+                <td><input type="text"></td>
+                <td class="no-print"><button type="button" class="delete-btn" onclick="deleteRow(this)">🗑️</button></td>
+            `;
+            tbody.appendChild(newRow);
+            updateTableLogic(tableId);
+        }
+
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            const tableId = row.closest('table').id;
+            if (confirm('Da li ste sigurni da želite da obrišete ovaj zapis?')) {
+                row.remove();
+                updateTableLogic(tableId);
+            }
+        }
+
+        function updateTableLogic(tableId) {
+            recalculateTable(tableId);
+            attachTableListeners(tableId);
+        }
+
+        function recalculateTable(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                const brojnoInput = row.cells[1].querySelector('input.brojno-stanje');
+                if (index === 0) {
+                    brojnoInput.classList.add('manual-input');
+                    brojnoInput.disabled = false;
+                    brojnoInput.style.opacity = '1';
+                } else {
+                    const prevRow = rows[index - 1];
+                    const prevBrojno = parseInt(prevRow.cells[1].querySelector('input').value) || 0;
+                    const prevDeaths = parseInt(prevRow.cells[2].querySelector('input').value) || 0;
+                    brojnoInput.value = prevBrojno - prevDeaths;
+                    brojnoInput.classList.remove('manual-input');
+                    brojnoInput.disabled = true;
+                    brojnoInput.style.opacity = '0.7';
+                }
+            });
+            updateSummary(tableId);
+        }
+
+        function updateSummary(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            
+            const rows = table.querySelectorAll('tbody tr');
+            let totalDeaths = 0;
+            rows.forEach(row => {
+                const deaths = parseInt(row.cells[2].querySelector('input').value) || 0;
+                totalDeaths += deaths;
+            });
+            
+            const avgDaily = rows.length > 0 ? (totalDeaths / rows.length).toFixed(1) : '0.0';
+            const useljenoId = tableId === 'lbTable' ? 'lbUseljeno' : 'lslUseljeno';
+            const useljeno = parseInt(document.getElementById(useljenoId).value) || 1;
+            const percentage = ((totalDeaths / useljeno) * 100).toFixed(2);
+            
+            const prefix = tableId === 'lbTable' ? 'lb' : 'lsl';
+            document.getElementById(`${prefix}TotalUginulo`).textContent = totalDeaths;
+            document.getElementById(`${prefix}Prosek`).textContent = avgDaily;
+            document.getElementById(`${prefix}Procenat`).textContent = percentage + '%';
+        }
+
+        function attachTableListeners(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            
+            const rows = table.querySelectorAll('tbody tr');
+            const handler = () => {
+                recalculateTable(tableId);
+                updateSummary(tableId);
+            };
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input.deaths, input.brojno-stanje');
+                inputs.forEach(input => {
+                    input.removeEventListener('input', handler);
+                    input.removeEventListener('change', handler);
+                    input.addEventListener('input', handler);
+                    input.addEventListener('change', handler);
+                });
+            });
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        function resetForm(formId) {
+            if (!confirm('Da li ste sigurni da želite da resetujete formu?')) return;
+            
+            const f = document.getElementById(formId);
+            const type = formId.replace('Form', '');
+            const tableId = `${type}Table`;
+            const table = document.getElementById(tableId);
+            
+            localStorage.removeItem(`prijava_${type}`);
+            f.reset();
+            
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            for (let i = rows.length - 1; i > 0; i--) {
+                rows[i].remove();
+            }
+            
+            updateTableLogic(tableId);
+            showToast('✅ Forma je resetovana!');
+        }
+
+        function updateTabName(type) {
+            const vrstaInput = document.getElementById(`${type}Vrsta`);
+            const objektInput = document.getElementById(`${type}Objekat`);
+            const tabs = document.querySelectorAll('.tab');
+            
+            if (!vrstaInput || !objektInput) return;
+            
+            const newName = `${vrstaInput.value} ${objektInput.value}`;
+            tabs.forEach((tab, index) => {
+                if ((type === 'lb' && index === 0) || (type === 'lsl' && index === 1)) {
+                    tab.textContent = newName;
+                }
+            });
+        }
+
+        function updateSubtitle() {
+            const activeTab = document.querySelector('.tab-content.active');
+            if (!activeTab) return;
+
+            const osiguranikInput = activeTab.querySelector('[id$="Osiguranik"]');
+            const brojPoliseInput = activeTab.querySelector('[id$="BrojPolise"]');
+
+            const osiguranik = osiguranikInput?.value || 'Spasić Farm doo Stalać';
+            const brojPolise = brojPoliseInput?.value || '806411';
+
+            const subtitle = document.getElementById('subtitle');
+            if (subtitle) {
+                subtitle.textContent = `${osiguranik} - Polisa #${brojPolise}`;
+            }
+        }
+
+        function saveFormData(type) {
+            const form = document.getElementById(`${type}Form`);
+            if (!form) return;
+            
+            const formData = {};
+            form.querySelectorAll('input, select').forEach(input => {
+                if (input.id) formData[input.id] = input.value;
+            });
+            
+            const tableRows = [];
+            document.getElementById(`${type}Table`).querySelectorAll('tbody tr').forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('input').forEach(input => {
+                    rowData.push(input.value);
+                });
+                tableRows.push(rowData);
+            });
+            
+            formData.tableData = tableRows;
+            localStorage.setItem(`prijava_${type}`, JSON.stringify(formData));
+            showToast(`✅ Prijava je sačuvana!`);
+        }
+
+        function loadFormData(type) {
+            const savedData = localStorage.getItem(`prijava_${type}`);
+            if (!savedData) return;
+            
+            const formData = JSON.parse(savedData);
+            const form = document.getElementById(`${type}Form`);
+            
+            Object.keys(formData).forEach(key => {
+                if (key === 'tableData') return;
+                const input = document.getElementById(key);
+                if (input) input.value = formData[key];
+            });
+            
+            if (formData.tableData && formData.tableData.length > 0) {
+                const tableId = `${type}Table`;
+                const tbody = document.querySelector(`#${tableId} tbody`);
+                const rows = tbody.querySelectorAll('tr');
+                
+                for (let i = rows.length - 1; i > 0; i--) {
+                    rows[i].remove();
+                }
+                
+                formData.tableData.forEach((rowData, index) => {
+                    if (index === 0) {
+                        const inputs = rows[0].querySelectorAll('input');
+                        rowData.forEach((val, idx) => { if (inputs[idx]) inputs[idx].value = val; });
+                    } else {
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td><input type="date" value="${rowData[0] || ''}" required></td>
+                            <td><input type="number" value="${rowData[1] || ''}" class="brojno-stanje uginulo-input"></td>
+                            <td><input type="number" value="${rowData[2] || ''}" class="deaths uginulo-input"></td>
+                            <td><input type="text" value="${rowData[3] || ''}" class="diagnosis"></td>
+                            <td><input type="text" value="${rowData[4] || ''}"></td>
+                            <td class="no-print"><button type="button" class="delete-btn" onclick="deleteRow(this)">🗑️</button></td>
+                        `;
+                        tbody.appendChild(newRow);
+                    }
+                });
+                
+                updateTableLogic(tableId);
+            }
+        }
+
+        function collectClaimData(type) {
+            const table = document.getElementById(`${type}Table`);
+            const tableData = [];
+            
+            table.querySelectorAll('tbody tr').forEach(row => {
+                const datum = row.cells[0].querySelector('input').value;
+                if (datum) {
+                    tableData.push({
+                        datum, 
+                        stanje: row.cells[1].querySelector('input').value,
+                        uginulo: row.cells[2].querySelector('input').value,
+                        dijagnoza: row.cells[3].querySelector('input').value,
+                        terapija: row.cells[4].querySelector('input').value
+                    });
+                }
+            });
+            
+            const vrsta = document.getElementById(`${type}Vrsta`).value;
+            const objekat = document.getElementById(`${type}Objekat`).value;
+            
+            return {
+                type: `${vrsta} ${objekat}`,
+                osiguranik: document.getElementById(`${type}Osiguranik`).value,
+                brojPolise: document.getElementById(`${type}BrojPolise`).value,
+                farma: document.getElementById(`${type}RadnaJedinica`).value,
+                useljeno: parseInt(document.getElementById(`${type}Useljeno`).value),
+                vrstaStete: document.getElementById(`${type}VrstaStete`).value,
+                uzrokStete: document.getElementById(`${type}UzrokStete`).value,
+                veterinar: document.getElementById(`${type}Veterinar`).value,
+                licenca: document.getElementById(`${type}Licenca`).value,
+                odDatuma: document.getElementById(`${type}Od`).value,
+                doDatuma: document.getElementById(`${type}Do`).value,
+                tableData,
+                summary: {
+                    totalUginulo: parseInt(document.getElementById(`${type}TotalUginulo`).textContent),
+                    prosek: document.getElementById(`${type}Prosek`).textContent,
+                    procenat: document.getElementById(`${type}Procenat`).textContent
+                }
+            };
+        }
+
+        function createClaimSheetData(claimData) {
+            const wsData = [];
+            wsData.push(['PRIJAVA ŠTETE NA ŽIVINI']);
+            wsData.push(['']);
+            wsData.push(['Osiguranik:', claimData.osiguranik, '', 'Polisa:', claimData.brojPolise]);
+            wsData.push(['Radna jedinica:', claimData.farma, '', 'Datum:', new Date().toLocaleDateString('sr-RS')]);
+            wsData.push(['Vrsta:', claimData.type, '', 'Useljeno:', claimData.useljeno + ' kom']);
+            wsData.push(['']);
+            wsData.push(['Vrsta štete:', claimData.vrstaStete, '', 'Uzrok:', claimData.uzrokStete]);
+            wsData.push(['Veterinar:', claimData.veterinar, '', 'Licenca:', claimData.licenca]);
+            wsData.push(['Period od:', claimData.odDatuma, '', 'do:', claimData.doDatuma]);
+            wsData.push(['']);
+            wsData.push(['DNEVNI ZAPISNIK ŠTETE']);
+            wsData.push(['RB', 'Datum', 'Brojno stanje', 'Uginulo', 'Dijagnoza', 'Terapija']);
+            
+            claimData.tableData.forEach((row, index) => {
+                wsData.push([index + 1, row.datum, parseInt(row.stanje), parseInt(row.uginulo), row.dijagnoza, row.terapija]);
+            });
+            
+            wsData.push(['']);
+            wsData.push(['REZIME ŠTETE']);
+            wsData.push(['Total uginulih:', claimData.summary.totalUginulo, 'kom']);
+            wsData.push(['Prosečno dnevno:', claimData.summary.prosek, 'kom']);
+            wsData.push(['Procenat od useljenih:', claimData.summary.procenat]);
+            
+            return wsData;
+        }
+
+        function exportCurrentClaim(type) {
+            showLoading();
+            setTimeout(() => {
+                try {
+                    const claimData = collectClaimData(type);
+                    const wb = XLSX.utils.book_new();
+                    const wsData = createClaimSheetData(claimData);
+                    const ws = XLSX.utils.aoa_to_sheet(wsData);
+                    ws['!cols'] = [{wch: 5}, {wch: 12}, {wch: 15}, {wch: 10}, {wch: 25}, {wch: 20}];
+                    XLSX.utils.book_append_sheet(wb, ws, type === 'lb' ? 'Tab1' : 'Tab2');
+                    XLSX.writeFile(wb, `Prijava_${claimData.type.replace(/\s+/g, '_')}.xlsx`);
+                    hideLoading();
+                    showToast('✅ Uspešno izvezeno!');
+                } catch (error) {
+                    hideLoading();
+                    showToast('❌ Greška: ' + error.message, 'error');
+                }
+            }, 100);
+        }
+
+        function exportAllClaims() {
+            showLoading();
+            setTimeout(() => {
+                try {
+                    const wb = XLSX.utils.book_new();
+                    
+                    const lbData = collectClaimData('lb');
+                    const lbWs = XLSX.utils.aoa_to_sheet(createClaimSheetData(lbData));
+                    lbWs['!cols'] = [{wch: 5}, {wch: 12}, {wch: 15}, {wch: 10}, {wch: 25}, {wch: 20}];
+                    XLSX.utils.book_append_sheet(wb, lbWs, 'Tab1');
+                    
+                    const lslData = collectClaimData('lsl');
+                    const lslWs = XLSX.utils.aoa_to_sheet(createClaimSheetData(lslData));
+                    lslWs['!cols'] = [{wch: 5}, {wch: 12}, {wch: 15}, {wch: 10}, {wch: 25}, {wch: 20}];
+                    XLSX.utils.book_append_sheet(wb, lslWs, 'Tab2');
+                    
+                    XLSX.writeFile(wb, `Kompletne_prijave_stete_${new Date().toISOString().split('T')[0]}.xlsx`);
+                    hideLoading();
+                    showToast('✅ Uspešno izvezeno!');
+                } catch (error) {
+                    hideLoading();
+                    showToast('❌ Greška: ' + error.message, 'error');
+                }
+            }, 100);
+        }
+
+        function openEmailModal(tab) {
+            document.getElementById('emailModal').style.display = 'block';
+            document.getElementById('emailLb').checked = tab === 'lb';
+            document.getElementById('emailLsl').checked = tab === 'lsl';
+        }
+
+        function closeEmailModal() {
+            document.getElementById('emailModal').style.display = 'none';
+        }
+
+        function sendEmailNotification() {
+            const emailTo = 'stete@risk.co.rs';
+            const lbChecked = document.getElementById('emailLb').checked;
+            const lslChecked = document.getElementById('emailLsl').checked;
+
+            if (!lbChecked && !lslChecked) {
+                alert('Molimo odaberite najmanje jedan prikaz.');
+                return;
+            }
+
+            let osiguranik = 'Spasić Farm doo Stalać';
+            let brojPolise = '806411';
+
+            const selectedReports = [];
+            if (lbChecked) {
+                osiguranik = document.getElementById('lbOsiguranik').value;
+                brojPolise = document.getElementById('lbBrojPolise').value;
+                selectedReports.push('Tab1 (' + document.getElementById('lbVrsta').value + ' ' + document.getElementById('lbObjekat').value + ')');
+            }
+            if (lslChecked) {
+                osiguranik = document.getElementById('lslOsiguranik').value;
+                brojPolise = document.getElementById('lslBrojPolise').value;
+                selectedReports.push('Tab2 (' + document.getElementById('lslVrsta').value + ' ' + document.getElementById('lslObjekat').value + ')');
+            }
+
+            const subject = `Prijava štete na živini - ${osiguranik} - Polisa #${brojPolise}`;
+            const body = `Prijava štete na živini\n\n${osiguranik}\nPolisa: #${brojPolise}\n\nObuhvaćene prijave:\n${selectedReports.join('\n')}\n\nDatum: ${new Date().toLocaleString('sr-RS')}`;
+            
+            window.location.href = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            closeEmailModal();
+        }
+
+        window.onclick = (event) => {
+            const modal = document.getElementById('emailModal');
+            if (event.target === modal) closeEmailModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('lbForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveFormData('lb');
+            });
+
+            document.getElementById('lslForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveFormData('lsl');
+            });
+
+            // Add event listeners for subtitle and tab name updates
+            const osiguraniciInputs = document.querySelectorAll('#lbOsiguranik, #lslOsiguranik, #lbBrojPolise, #lslBrojPolise');
+            osiguraniciInputs.forEach(input => {
+                input.addEventListener('input', updateSubtitle);
+                input.addEventListener('change', updateSubtitle);
+            });
+
+            const vrstaInputs = document.querySelectorAll('#lbVrsta, #lbObjekat, #lslVrsta, #lslObjekat');
+            vrstaInputs.forEach(input => {
+                const type = input.id.startsWith('lb') ? 'lb' : 'lsl';
+                input.addEventListener('input', () => updateTabName(type));
+                input.addEventListener('change', () => updateTabName(type));
+            });
+
+            loadFormData('lb');
+            loadFormData('lsl');
+
+            attachTableListeners('lbTable');
+            attachTableListeners('lslTable');
+
+            recalculateTable('lbTable');
+            recalculateTable('lslTable');
+
+            updateSummary('lbTable');
+            updateSummary('lslTable');
+
+            updateTabName('lb');
+            updateTabName('lsl');
+            
+            updateSubtitle();
+        });
+    </script>
+</body>
+</html>
