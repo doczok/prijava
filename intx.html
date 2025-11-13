@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sadržaj - Spasić Farm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2c3e50 100%);
+            color: white;
+            padding: 40px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            position: relative;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.3em;
+            opacity: 0.85;
+            position: relative;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .card h2 {
+            color: #1a3a5f;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e8f0fe;
+            font-weight: 600;
+            font-size: 1.6em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .content-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content-item {
+            margin-bottom: 20px;
+        }
+
+        .content-link {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 2px solid #e8f0fe;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .content-link:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%);
+            border-color: #4a90e2;
+            transform: translateX(10px);
+            box-shadow: 0 6px 16px rgba(74, 144, 226, 0.15);
+        }
+
+        .content-link:active {
+            transform: translateX(10px) scale(0.98);
+        }
+
+        .icon {
+            font-size: 2.5em;
+            margin-right: 20px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .content-details {
+            flex: 1;
+        }
+
+        .content-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1a3a5f;
+            margin-bottom: 6px;
+        }
+
+        .content-description {
+            font-size: 1em;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        .arrow {
+            font-size: 1.5em;
+            color: #4a90e2;
+            margin-left: 15px;
+        }
+
+        .info-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #d1e7ff 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #bbdefb;
+        }
+
+        .info-section h3 {
+            color: #1a3a5f;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-section p {
+            color: #2c3e50;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2c3e50 100%);
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            margin-top: auto;
+            opacity: 0.9;
+        }
+
+        footer p {
+            margin: 5px 0;
+            opacity: 0.85;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1.1em;
+            }
+
+            .content-link {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .arrow {
+                display: none;
+            }
+        }
+
+        @media print {
+            body { background: white; }
+            .card { box-shadow: none; page-break-inside: avoid; }
+            footer { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📑 Sadržaj</h1>
+        <p class="subtitle">Spasić Farm doo Stalać - Dokumentacija</p>
+    </header>
+
+    <div class="container">
+        <div class="info-section">
+            <h3>ℹ️ Informacije</h3>
+            <p>Dobrodošli u sistem za upravljanje prijavama šteta na živini.</p>
+            <p>Ovde možete pristupiti svim dostupnim formularima i dokumentaciji.</p>
+        </div>
+
+        <div class="card">
+            <h2>📋 Dostupni Formulari</h2>
+            <ul class="content-list">
+                <li class="content-item">
+                    <a href="prijava_stete_zivina_807443.html" class="content-link">
+                        <span class="icon">🐔</span>
+                        <div class="content-details">
+                            <div class="content-title">Prijava štete na živini</div>
+                            <div class="content-description">
+                                Formular za prijavu štete na živini - Polisa #806411<br>
+                                <strong>Obuhvata:</strong> Lohmann Brown i Lohmann Brown LSL
+                            </div>
+                        </div>
+                        <span class="arrow">→</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📊 Statistika</h2>
+            <div class="info-section" style="background: rgba(255,255,255,0.5);">
+                <p><strong>Broj aktivnih polisa:</strong> 1</p>
+                <p><strong>Obuhvaćene farme:</strong> Ćićevac, Lovačko Polje</p>
+                <p><strong>Period osiguranja:</strong> 2025-01-01 do 2025-12-31</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Spasić Farm doo Stalać</p>
+        <p>Sistem za upravljanje prijavama šteta</p>
+    </footer>
+</body>
+</html>
