@@ -63,8 +63,8 @@ When Copilot updates `index.html`, you should see a new entry like:
 
 ## Current State
 
-- **Files in repository**: 1 claim file (`prijava_stete_zivina_807443.html`)
-- **Listed in index.html**: ✅ Yes
+- **Files in repository**: 3 claim files (`prijava_stete_zivina_806411.html`, `prijava_stete_zivina_806435.html`, `prijava_stete_zivina_807443.html`)
+- **Listed in index.html**: ✅ Yes (all 3 files)
 - **Copilot instructions**: ✅ Active in `.github/copilot-instructions.md`
 
 ## Next Steps
