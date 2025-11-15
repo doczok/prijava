@@ -846,6 +846,28 @@
         </div>
     </div>
 
+    <!-- Reset Confirmation Modal -->
+    <div class="modal" id="resetModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeResetModal()">&times;</span>
+            <div class="modal-header">🔄 Resetovanje forme</div>
+            <div class="modal-body">
+                <p>Da li ste sigurni da želite da resetujete formu?</p>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="keepSavedData"> 
+                        Zadrži sačuvane unose (ne briši iz memorije)
+                    </label>
+                </div>
+                <p><strong>Napomena:</strong> Ako ne označite ovu opciju, svi sačuvani podaci će biti trajno obrisani iz lokalne memorije.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="confirmReset()">🔄 Resetuj formu</button>
+                <button class="btn btn-primary" onclick="closeResetModal()">❌ Otkaži</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function switchTab(tabName, btn) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -975,15 +997,33 @@
             window.print();
         }
 
+        let currentResetFormId = null;
+
         function resetForm(formId) {
-            if (!confirm('Da li ste sigurni da želite da resetujete formu?')) return;
+            currentResetFormId = formId;
+            document.getElementById('keepSavedData').checked = false;
+            document.getElementById('resetModal').style.display = 'block';
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetModal').style.display = 'none';
+            currentResetFormId = null;
+        }
+
+        function confirmReset() {
+            if (!currentResetFormId) return;
             
-            const f = document.getElementById(formId);
-            const type = formId.replace('Form', '');
+            const keepSaved = document.getElementById('keepSavedData').checked;
+            const f = document.getElementById(currentResetFormId);
+            const type = currentResetFormId.replace('Form', '');
             const tableId = `${type}Table`;
             const table = document.getElementById(tableId);
             
-            localStorage.removeItem(`prijava_${type}`);
+            // Only remove from localStorage if user doesn't want to keep saved data
+            if (!keepSaved) {
+                localStorage.removeItem(`prijava_${type}`);
+            }
+            
             f.reset();
             
             const tbody = table.querySelector('tbody');
@@ -993,7 +1033,14 @@
             }
             
             updateTableLogic(tableId);
-            showToast('✅ Forma je resetovana!');
+            
+            if (keepSaved) {
+                showToast('✅ Forma je resetovana! Sačuvani podaci su zadržani.');
+            } else {
+                showToast('✅ Forma je resetovana i svi podaci su obrisani!');
+            }
+            
+            closeResetModal();
         }
 
         function updateTabName(type) {
@@ -1252,8 +1299,10 @@
         }
 
         window.onclick = (event) => {
-            const modal = document.getElementById('emailModal');
-            if (event.target === modal) closeEmailModal();
+            const emailModal = document.getElementById('emailModal');
+            const resetModal = document.getElementById('resetModal');
+            if (event.target === emailModal) closeEmailModal();
+            if (event.target === resetModal) closeResetModal();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
